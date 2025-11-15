@@ -1,0 +1,13 @@
+:root{--c:#0ea5e9;--bg:#0b1020;--tx:#e6ecff}
+*{box-sizing:border-box}
+body{margin:0;font-family:system-ui,Segoe UI,Roboto,Inter,Arial,sans-serif;background:#0b1020;color:var(--tx)}
+.container{max-width:760px;margin:0 auto;padding:32px 16px}
+.card{background:#101736;border:1px solid rgba(255,255,255,.12);border-radius:14px;padding:20px}
+h1{margin-top:0}
+label span{display:block;font-weight:600;margin:.4rem 0}
+input,textarea,select{width:100%;padding:.8rem;border-radius:10px;border:1px solid rgba(255,255,255,.18);background:#0e1430;color:#e6ecff}
+button{display:inline-block;margin-top:12px;background:var(--c);border:none;color:#001018;padding:.8rem 1.1rem;border-radius:999px;font-weight:700;cursor:pointer}
+.help{color:#b7c0dc;font-size:.95rem}
+nav a{color:#9acbff;margin-right:12px;text-decoration:none}
+nav{margin-bottom:16px}
+.success{color:#6ee7a8}

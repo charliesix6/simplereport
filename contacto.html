@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Contacto — SimpleReport</title>
+  <link rel="stylesheet" href="/styles-form.css" />
+</head>
+<body>
+  <div class="container">
+    <nav><a href="/contacto.html">Contacto</a> · <a href="/solicitud.html">Solicitud</a></nav>
+    <h1>Contacto</h1>
+    <p class="help">Este formulario envía a <strong>administracion@simplereport.es</strong>.</p>
+
+    <div class="card">
+      <!-- target=_blank para ver la página de confirmación de FormSubmit mientras pruebas en local -->
+      <form action="https://formsubmit.co/administracion@simplereport.es" method="POST" target="_blank">
+        <label>
+          <span>Nombre</span>
+          <input name="nombre" required />
+        </label>
+
+        <label>
+          <span>Email</span>
+          <input name="email" type="email" required />
+        </label>
+
+        <label>
+          <span>Teléfono (opcional)</span>
+          <input name="telefono" />
+        </label>
+
+        <label>
+          <span>Mensaje</span>
+          <textarea name="mensaje" rows="4" required></textarea>
+        </label>
+
+        <label class="terms">
+          <input type="checkbox" name="privacidad" value="aceptada" required />
+          Acepto la <a href="/privacidad" target="_blank">política de privacidad</a>.
+        </label>
+
+        <!-- Opciones de FormSubmit -->
+        <input type="hidden" name="_subject"  value="Nuevo mensaje de contacto (web)" />
+        <input type="hidden" name="_template" value="table" />
+        <input type="hidden" name="_captcha"  value="false" />
+        <input type="text"   name="_honey"    style="display:none" />
+
+        <!-- *** IMPORTANTE: para ver el request en Webhook.site *** -->
+        <input type="hidden" name="_webhook" value="https://webhook.site/79470590-ade1-45dd-8155-a141fbceb630" />
+
+        <!-- Copia a un correo externo para comprobar entregas (opcional) -->
+        <input type="hidden" name="_cc" value="tu@gmail.com" />
+
+        <!-- Cuando levantes servidor local, puedes redirigir a tu gracias.html:
+        <input type="hidden" name="_next" value="http://localhost:5500/gracias.html"> -->
+
+        <button type="submit">Enviar</button>
+      </form>
+    </div>
+  </div>
+</body>
+</html>
