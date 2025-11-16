@@ -7,7 +7,7 @@ import { HelmetProvider, Helmet } from "react-helmet-async";
 
 // 👇 Imágenes (en src/assets)
 import hero from "./assets/hero.jpg";
-import logo from "./assets/logo.jpg";
+import logo from "./assets/logo.png";
 
 // ────────────────────────────────────────────────────────────────────────────────
 // Utilidades y constantes
