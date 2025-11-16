@@ -1,10 +1,7 @@
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
+import { defineConfig } from "vite";
+import react from "@vitejs/plugin-react";
 
 export default defineConfig({
+  base: "./", // usa './' para que los assets se resuelvan correctamente en GH Pages
   plugins: [react()],
-  base: '/simplereport/',   // 👈 nombre EXACTO del repo en GitHub
-  build: {
-    outDir: 'docs',         // 👈 Vite generará la build en /docs
-  },
-})
+});
