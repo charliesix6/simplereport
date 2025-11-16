@@ -1,9 +1,13 @@
 // src/App.jsx
 import { useEffect, useMemo, useState } from "react";
-import { BrowserRouter, Routes, Route, Link, useNavigate, useLocation } from "react-router-dom";
+import { HashRouter, Routes, Route, Link, useNavigate, useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Menu, X, ArrowRight, Check, ShieldCheck, FileText, Upload, Mail, Phone, MapPin, Lock, Info } from "lucide-react";
 import { HelmetProvider, Helmet } from "react-helmet-async";
+
+// 👇 Imágenes (en src/assets)
+import hero from "./assets/hero.jpg";
+import logo from "./assets/logo.jpg";
 
 // ────────────────────────────────────────────────────────────────────────────────
 // Utilidades y constantes
@@ -129,7 +133,6 @@ function ScrollToTop() {
 // ────────────────────────────────────────────────────────────────────────────────
 function Navbar() {
   const [open, setOpen] = useState(false);
-  const navigate = useNavigate();
 
   return (
     <header className="fixed top-0 inset-x-0 z-50 bg-black/80 backdrop-blur border-b border-gray-800">
@@ -139,7 +142,7 @@ function Navbar() {
           className="flex items-center gap-3 hover:opacity-80 transition-opacity"
           onClick={() => setOpen(false)}
         >
-          <img src="/logo.png" alt="Simple Report logo" className="h-8 w-8" />
+          <img src={logo} alt="Simple Report logo" className="h-8 w-8" />
           <span className="font-serif text-xl tracking-tight">SIMPLE REPORT</span>
         </Link>
 
@@ -298,7 +301,7 @@ function Home() {
           <div className="relative">
             <div className="aspect-[4/3] w-full rounded-3xl bg-neutral-800/60 border border-gray-800 overflow-hidden">
               <img
-                src="/hero.jpg"
+                src={hero}
                 alt="Profesional revisando documentos"
                 className="w-full h-full object-cover"
                 loading="eager"
@@ -693,8 +696,8 @@ function Seguridad() {
 // ────────────────────────────────────────────────────────────────────────────────
 function TextInput({ 
   label, type = "text", required, value, onChange, placeholder, name, 
-  pattern,  // NUEVO
-  error     // NUEVO
+  pattern,
+  error
 }) {
   const id = useMemo(() => `${name}-${Math.random().toString(36).slice(2, 7)}`,[name]);
   const [touched, setTouched] = useState(false);
@@ -709,7 +712,7 @@ function TextInput({
         name={name} 
         type={type} 
         required={required} 
-        pattern={pattern}  // NUEVO
+        pattern={pattern}
         className={classNames(
           "mt-1 w-full rounded-xl border px-3 py-2 transition-all duration-200",
           "bg-black text-white placeholder-white/40",
@@ -721,11 +724,11 @@ function TextInput({
         placeholder={placeholder} 
         value={value} 
         onChange={(e)=>onChange(e.target.value)}
-        onBlur={() => setTouched(true)}  // NUEVO
-        aria-invalid={touched && !!error}  // NUEVO - Accesibilidad
+        onBlur={() => setTouched(true)}
+        aria-invalid={touched && !!error}
       />
       {touched && error && (
-        <p className="mt-1 text-xs text-red-500">{error}</p>  // NUEVO
+        <p className="mt-1 text-xs text-red-500">{error}</p>
       )}
     </div>
   );
@@ -851,7 +854,7 @@ function SolicitudPlanForm() {
       });
       if(res.ok){
         setToast({ message: "✓ Solicitud enviada correctamente", type: "success" });
-        setTimeout(() => navigate(`/gracias/${ty}`), 1500);
+        setTimeout(() => navigate(`/gracias/${slug}`), 1500);
       }else{
         setToast({ message: "✗ Error al enviar. Inténtalo de nuevo.", type: "error" });
       }
@@ -869,7 +872,7 @@ function SolicitudPlanForm() {
       if(form.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) {
         setErrors(prev => ({...prev, email: "Email inválido"}));
       }
-    }, 500); // Después de 500ms sin escribir
+    }, 500);
     
     return () => clearTimeout(timer);
   }, [form.email]);
@@ -940,7 +943,7 @@ function SolicitudPlanForm() {
             name="privacidad"
             required={true}
             checked={form.rgpd}
-            onChange={(v) => setForm({...form, rgpd: v})}  // ✅ Función completa
+            onChange={(v) => setForm({...form, rgpd: v})}
             label={<span>Acepto la <Link to="/privacidad" className="underline">Política de privacidad</Link></span>}
           />
 
@@ -974,7 +977,11 @@ function SolicitudPlanForm() {
           <p className="text-xs text-white/60">{progressPercent}% del formulario completado</p>
         </form>
 
-        {toast && <Toast message={toast.message} type={toast.type} onClose={() => setToast(null)} />}
+        {toast && (
+          <Toast show={true} onClose={() => setToast(null)}>
+            {toast.message}
+          </Toast>
+        )}
       </div>
     </main>
   );
@@ -1227,9 +1234,9 @@ function FontLoader(){
 
 // 1. NUEVO: Componente Toast para notificaciones
 function Toast({
-  show, // Controla la visibilidad del toast
-  onClose, // Función para cerrar el toast
-  children, // Contenido del toast
+  show,
+  onClose,
+  children,
 }) {
   return (
     <div
@@ -1280,217 +1287,216 @@ function AppShell(){
 
         {/* Legales */}
         <Route
-  path="/aviso-legal"
-  element={
-    <LegalPage title="Aviso legal">
-      <>
-        <p><strong>Titular:</strong> Simple Report, S.L.</p>
-        <p><strong>CIF:</strong> B22687024</p>
-        <p><strong>Domicilio social:</strong> Camino de Montoro, 35, 28055, Madrid (España)</p>
-        <p><strong>Correo electrónico de contacto:</strong> <a href="mailto:administracion@simplereport.es">administracion@simplereport.es</a></p>
-        <p><strong>Registro Mercantil:</strong> Inscrita en el Registro Mercantil de Madrid, Tomo 40752, Folio 104, Sección 8, Hoja M-723608, Inscripción 1ª.</p>
+          path="/aviso-legal"
+          element={
+            <LegalPage title="Aviso legal">
+              <>
+                <p><strong>Titular:</strong> Simple Report, S.L.</p>
+                <p><strong>CIF:</strong> B22687024</p>
+                <p><strong>Domicilio social:</strong> Camino de Montoro, 35, 28055, Madrid (España)</p>
+                <p><strong>Correo electrónico de contacto:</strong> <a href="mailto:administracion@simplereport.es">administracion@simplereport.es</a></p>
+                <p><strong>Registro Mercantil:</strong> Inscrita en el Registro Mercantil de Madrid, Tomo 40752, Folio 104, Sección 8, Hoja M-723608, Inscripción 1ª.</p>
 
-        <h2>Objeto</h2>
-        <p>
-          El presente sitio web tiene por objeto ofrecer información corporativa sobre los servicios de Simple Report, S.L., empresa que actúa
-          como proveedor de servicios especializados para intermediarios de crédito hipotecario y prestamistas de crédito hipotecario,
-          encargándose de la preparación y envío de los reportes financieros exigidos por el Banco de España.
-        </p>
+                <h2>Objeto</h2>
+                <p>
+                  El presente sitio web tiene por objeto ofrecer información corporativa sobre los servicios de Simple Report, S.L., empresa que actúa
+                  como proveedor de servicios especializados para intermediarios de crédito hipotecario y prestamistas de crédito hipotecario,
+                  encargándose de la preparación y envío de los reportes financieros exigidos por el Banco de España.
+                </p>
 
-        <h2>Condiciones de uso</h2>
-        <p>
-          El acceso y uso de este sitio web atribuye la condición de usuario e implica la aceptación plena de este Aviso Legal. El usuario se
-          compromete a hacer un uso adecuado de los contenidos, absteniéndose de emplearlos para actividades ilícitas o que puedan causar
-          perjuicio a terceros.
-        </p>
+                <h2>Condiciones de uso</h2>
+                <p>
+                  El acceso y uso de este sitio web atribuye la condición de usuario e implica la aceptación plena de este Aviso Legal. El usuario se
+                  compromete a hacer un uso adecuado de los contenidos, absteniéndose de emplearlos para actividades ilícitas o que puedan causar
+                  perjuicio a terceros.
+                </p>
 
-        <h2>Propiedad intelectual e industrial</h2>
-        <p>
-          Los contenidos de este sitio web (textos, logotipos, diseños, código, etc.) son titularidad de Simple Report, S.L. o de terceros que
-          han autorizado su uso. Queda prohibida su reproducción, distribución, comunicación pública o transformación sin autorización expresa.
-        </p>
+                <h2>Propiedad intelectual e industrial</h2>
+                <p>
+                  Los contenidos de este sitio web (textos, logotipos, diseños, código, etc.) son titularidad de Simple Report, S.L. o de terceros que
+                  han autorizado su uso. Queda prohibida su reproducción, distribución, comunicación pública o transformación sin autorización expresa.
+                </p>
 
-        <h2>Responsabilidad</h2>
-        <p>
-          Simple Report, S.L. no se hace responsable del uso indebido de la información de la web ni de los contenidos de sitios externos
-          enlazados.
-        </p>
+                <h2>Responsabilidad</h2>
+                <p>
+                  Simple Report, S.L. no se hace responsable del uso indebido de la información de la web ni de los contenidos de sitios externos
+                  enlazados.
+                </p>
 
-        <h2>Protección de datos</h2>
-        <p>
-          El tratamiento de los datos personales de los usuarios se rige por la Política de Privacidad disponible en este sitio web.
-        </p>
+                <h2>Protección de datos</h2>
+                <p>
+                  El tratamiento de los datos personales de los usuarios se rige por la Política de Privacidad disponible en este sitio web.
+                </p>
 
-        <h2>Legislación aplicable y jurisdicción</h2>
-        <p>
-          Este Aviso Legal se rige por la legislación española. Para la resolución de conflictos, las partes se someten a los Juzgados y
-          Tribunales de Madrid, salvo norma imperativa en contrario.
-        </p>
-      </>
-    </LegalPage>
-  }
-/>
+                <h2>Legislación aplicable y jurisdicción</h2>
+                <p>
+                  Este Aviso Legal se rige por la legislación española. Para la resolución de conflictos, las partes se someten a los Juzgados y
+                  Tribunales de Madrid, salvo norma imperativa en contrario.
+                </p>
+              </>
+            </LegalPage>
+          }
+        />
         <Route
-  path="/privacidad"
-  element={
-    <LegalPage title="Política de privacidad">
-      <>
-        <p><strong>Responsable del tratamiento:</strong><br />
-          Simple Report, S.L. – CIF: B22687024 – Camino de Montoro, 35, 28055, Madrid (España).<br />
-          Correo electrónico: <a href="mailto:administracion@simplereport.es">administracion@simplereport.es</a>
-        </p>
+          path="/privacidad"
+          element={
+            <LegalPage title="Política de privacidad">
+              <>
+                <p><strong>Responsable del tratamiento:</strong><br />
+                  Simple Report, S.L. – CIF: B22687024 – Camino de Montoro, 35, 28055, Madrid (España).<br />
+                  Correo electrónico: <a href="mailto:administracion@simplereport.es">administracion@simplereport.es</a>
+                </p>
 
-        <h2>Finalidad del tratamiento</h2>
-        <ul>
-          <li>Gestionar las solicitudes de información recibidas por formulario, correo electrónico o teléfono.</li>
-          <li>Prestar los servicios contratados por intermediarios de crédito hipotecario y prestamistas de crédito hipotecario.</li>
-          <li>Cumplir las obligaciones legales derivadas de la relación contractual y las exigencias regulatorias aplicables.</li>
-        </ul>
+                <h2>Finalidad del tratamiento</h2>
+                <ul>
+                  <li>Gestionar las solicitudes de información recibidas por formulario, correo electrónico o teléfono.</li>
+                  <li>Prestar los servicios contratados por intermediarios de crédito hipotecario y prestamistas de crédito hipotecario.</li>
+                  <li>Cumplir las obligaciones legales derivadas de la relación contractual y las exigencias regulatorias aplicables.</li>
+                </ul>
 
-        <h2>Legitimación</h2>
-        <ul>
-          <li><strong>Consentimiento</strong> del interesado (contacto y comunicaciones iniciales).</li>
-          <li><strong>Ejecución de un contrato</strong> (prestación de servicios).</li>
-          <li><strong>Cumplimiento de obligaciones legales</strong> (p. ej., normativa tributaria y, en su caso, requerimientos del Banco de España).</li>
-        </ul>
+                <h2>Legitimación</h2>
+                <ul>
+                  <li><strong>Consentimiento</strong> del interesado (contacto y comunicaciones iniciales).</li>
+                  <li><strong>Ejecución de un contrato</strong> (prestación de servicios).</li>
+                  <li><strong>Cumplimiento de obligaciones legales</strong> (p. ej., normativa tributaria y, en su caso, requerimientos del Banco de España).</li>
+                </ul>
 
-        <h2>Destinatarios</h2>
-        <p>No se cederán datos a terceros salvo obligación legal o cuando sea necesario para la prestación del servicio
-          (p. ej., asesoría fiscal/contable, alojamiento/hosting). En su caso, se firmarán los contratos de encargo de tratamiento correspondientes.</p>
+                <h2>Destinatarios</h2>
+                <p>No se cederán datos a terceros salvo obligación legal o cuando sea necesario para la prestación del servicio
+                  (p. ej., asesoría fiscal/contable, alojamiento/hosting). En su caso, se firmarán los contratos de encargo de tratamiento correspondientes.</p>
 
-        <h2>Plazos de conservación</h2>
-        <p>Conservaremos sus datos mientras se mantenga la relación y, después, durante los plazos exigidos por la ley
-          para atender posibles responsabilidades.</p>
+                <h2>Plazos de conservación</h2>
+                <p>Conservaremos sus datos mientras se mantenga la relación y, después, durante los plazos exigidos por la ley
+                  para atender posibles responsabilidades.</p>
 
-        <h2>Derechos</h2>
-        <p>Puede ejercer sus derechos de acceso, rectificación, supresión, oposición, limitación y portabilidad
-          enviando una solicitud con copia de su documento identificativo a:</p>
-        <ul>
-          <li>Dirección postal: Camino de Montoro, 35, 28055, Madrid.</li>
-          <li>Correo electrónico: <a href="mailto:administracion@simplereport.es">administracion@simplereport.es</a></li>
-        </ul>
-        <p>También puede presentar una reclamación ante la Agencia Española de Protección de Datos:
-          <a href="https://www.aepd.es" target="_blank" rel="noreferrer"> www.aepd.es</a>.
-        </p>
+                <h2>Derechos</h2>
+                <p>Puede ejercer sus derechos de acceso, rectificación, supresión, oposición, limitación y portabilidad
+                  enviando una solicitud con copia de su documento identificativo a:</p>
+                <ul>
+                  <li>Dirección postal: Camino de Montoro, 35, 28055, Madrid.</li>
+                  <li>Correo electrónico: <a href="mailto:administracion@simplereport.es">administracion@simplereport.es</a></li>
+                </ul>
+                <p>También puede presentar una reclamación ante la Agencia Española de Protección de Datos:
+                  <a href="https://www.aepd.es" target="_blank" rel="noreferrer"> www.aepd.es</a>.
+                </p>
 
-        <h2>Medidas de seguridad</h2>
-        <p>Simple Report, S.L. aplica medidas técnicas y organizativas para garantizar la confidencialidad, integridad y
-          disponibilidad de la información, de acuerdo con el RGPD y la LOPD-GDD.</p>
+                <h2>Medidas de seguridad</h2>
+                <p>Simple Report, S.L. aplica medidas técnicas y organizativas para garantizar la confidencialidad, integridad y
+                  disponibilidad de la información, de acuerdo con el RGPD y la LOPD-GDD.</p>
 
-        <p style={{marginTop: '1rem', fontSize: '0.9em', color: '#6b7280'}}>
-          Última actualización: 01/10/2025
-        </p>
-      </>
-    </LegalPage>
-  }
-/>
-       <Route
-  path="/cookies"
-  element={
-    <LegalPage title="Política de cookies">
-      <>
-        <h2>¿Qué son las cookies?</h2>
-        <p>
-          Una cookie es un pequeño archivo de texto que se almacena en su navegador cuando visita
-          determinadas páginas web. Sirven para que la web funcione correctamente o recuerde su visita.
-        </p>
-
-        <h2>Cookies que utiliza esta web</h2>
-        <p>
-          Este sitio web únicamente utiliza <strong>cookies técnicas estrictamente necesarias</strong>,
-          que permiten el correcto funcionamiento de la navegación y de los formularios. No se utilizan cookies
-          de publicidad, análisis ni de terceros.
-        </p>
-
-        <h2>Aceptación o rechazo de cookies</h2>
-        <p>
-          Al ser cookies técnicas imprescindibles para el funcionamiento de la web, no es necesario
-          solicitar el consentimiento expreso del usuario mediante un banner. La navegación en este sitio
-          implica la aceptación de estas cookies técnicas.
-        </p>
-
-        <h2>Gestión de cookies en el navegador</h2>
-        <p>
-          Puede configurar su navegador para bloquear o eliminar cookies en cualquier momento.
-          Consulte las instrucciones de su navegador:
-        </p>
-        <ul>
-          <li><a href="https://support.google.com/chrome/answer/95647" target="_blank" rel="noreferrer">Google Chrome</a></li>
-          <li><a href="https://support.mozilla.org/es/kb/habilitar-y-deshabilitar-cookies-sitios-web" target="_blank" rel="noreferrer">Mozilla Firefox</a></li>
-          <li><a href="https://support.microsoft.com/es-es/microsoft-edge/eliminar-cookies-en-microsoft-edge-63947406-40ac-c3b8-57b9-2a946a29ae09" target="_blank" rel="noreferrer">Microsoft Edge</a></li>
-          <li><a href="https://support.apple.com/es-es/guide/safari/sfri11471/mac" target="_blank" rel="noreferrer">Safari</a></li>
-        </ul>
-
-        <p style={{marginTop: '1rem', fontSize: '0.9em', color: '#6b7280'}}>
-          Última actualización: 01/10/2025
-        </p>
-      </>
-    </LegalPage>
-  }
-/>
+                <p style={{marginTop: '1rem', fontSize: '0.9em', color: '#6b7280'}}>
+                  Última actualización: 01/10/2025
+                </p>
+              </>
+            </LegalPage>
+          }
+        />
         <Route
-  path="/terminos"
-  element={
-    <LegalPage title="Términos del servicio">
-      <>
-        <h2>1. Objeto del contrato</h2>
-        <p>
-          Estas condiciones regulan la contratación de los servicios de Simple Report, S.L., empresa que presta
-          servicios a intermediarios de crédito hipotecario y prestamistas de crédito hipotecario para la preparación
-          y envío de los reportes financieros al Banco de España.
-        </p>
+          path="/cookies"
+          element={
+            <LegalPage title="Política de cookies">
+              <>
+                <h2>¿Qué son las cookies?</h2>
+                <p>
+                  Una cookie es un pequeño archivo de texto que se almacena en su navegador cuando visita
+                  determinadas páginas web. Sirven para que la web funcione correctamente o recuerde su visita.
+                </p>
 
-        <h2>2. Procedimiento de contratación</h2>
-        <ul>
-          <li>La contratación se formaliza mediante la firma del contrato y el pago de la factura proforma.</li>
-          <li>El pago se realizará exclusivamente mediante transferencia bancaria.</li>
-          <li>Hasta recibir el pago completo, Simple Report, S.L. no iniciará la prestación de servicios.</li>
-        </ul>
+                <h2>Cookies que utiliza esta web</h2>
+                <p>
+                  Este sitio web únicamente utiliza <strong>cookies técnicas estrictamente necesarias</strong>,
+                  que permiten el correcto funcionamiento de la navegación y de los formularios. No se utilizan cookies
+                  de publicidad, análisis ni de terceros.
+                </p>
 
-        <h2>3. Entrega de información</h2>
-        <p>El cliente deberá enviar la documentación necesaria en los siguientes plazos:</p>
-        <ul>
-          <li><strong>Primer semestre:</strong> antes del 20 de diciembre.</li>
-          <li><strong>Segundo semestre:</strong> antes del 20 de junio.</li>
-        </ul>
-        <p>
-          Si la documentación no se recibe a tiempo, Simple Report, S.L. no garantiza la correcta presentación del
+                <h2>Aceptación o rechazo de cookies</h2>
+                <p>
+                  Al ser cookies técnicas imprescindibles para el funcionamiento de la web, no es necesario
+                  solicitar el consentimiento expreso del usuario mediante un banner. La navegación en este sitio
+                  implica la aceptación de estas cookies técnicas.
+                </p>
 
-          reporte al Banco de España.
-        </p>
+                <h2>Gestión de cookies en el navegador</h2>
+                <p>
+                  Puede configurar su navegador para bloquear o eliminar cookies en cualquier momento.
+                  Consulte las instrucciones de su navegador:
+                </p>
+                <ul>
+                  <li><a href="https://support.google.com/chrome/answer/95647" target="_blank" rel="noreferrer">Google Chrome</a></li>
+                  <li><a href="https://support.mozilla.org/es/kb/habilitar-y-deshabilitar-cookies-sitios-web" target="_blank" rel="noreferrer">Mozilla Firefox</a></li>
+                  <li><a href="https://support.microsoft.com/es-es/microsoft-edge/eliminar-cookies-en-microsoft-edge-63947406-40ac-c3b8-57b9-2a946a29ae09" target="_blank" rel="noreferrer">Microsoft Edge</a></li>
+                  <li><a href="https://support.apple.com/es-es/guide/safari/sfri11471/mac" target="_blank" rel="noreferrer">Safari</a></li>
+                </ul>
 
-        <h2>4. Política de devoluciones</h2>
-        <p>Una vez contratado el servicio y realizado el pago, no se admitirán devoluciones.</p>
+                <p style={{marginTop: '1rem', fontSize: '0.9em', color: '#6b7280'}}>
+                  Última actualización: 01/10/2025
+                </p>
+              </>
+            </LegalPage>
+          }
+        />
+        <Route
+          path="/terminos"
+          element={
+            <LegalPage title="Términos del servicio">
+              <>
+                <h2>1. Objeto del contrato</h2>
+                <p>
+                  Estas condiciones regulan la contratación de los servicios de Simple Report, S.L., empresa que presta
+                  servicios a intermediarios de crédito hipotecario y prestamistas de crédito hipotecario para la preparación
+                  y envío de los reportes financieros al Banco de España.
+                </p>
 
-        <h2>5. Obligaciones del cliente</h2>
-        <ul>
-          <li>Firmar el contrato y realizar el pago en plazo.</li>
-          <li>Facilitar información veraz, completa y en los plazos indicados.</li>
-          <li>Cumplir con las normativas que le correspondan como intermediario o prestamista hipotecario.</li>
-        </ul>
+                <h2>2. Procedimiento de contratación</h2>
+                <ul>
+                  <li>La contratación se formaliza mediante la firma del contrato y el pago de la factura proforma.</li>
+                  <li>El pago se realizará exclusivamente mediante transferencia bancaria.</li>
+                  <li>Hasta recibir el pago completo, Simple Report, S.L. no iniciará la prestación de servicios.</li>
+                </ul>
 
-        <h2>6. Obligaciones de Simple Report, S.L.</h2>
-        <ul>
-          <li>Prestar el servicio conforme al contrato y la información recibida.</li>
-          <li>Garantizar la confidencialidad de los datos y documentos conforme al RGPD y la LOPD-GDD.</li>
-          <li>Enviar al Banco de España los reportes financieros siempre que se cumplan los plazos de entrega de documentación.</li>
-        </ul>
+                <h2>3. Entrega de información</h2>
+                <p>El cliente deberá enviar la documentación necesaria en los siguientes plazos:</p>
+                <ul>
+                  <li><strong>Primer semestre:</strong> antes del 20 de diciembre.</li>
+                  <li><strong>Segundo semestre:</strong> antes del 20 de junio.</li>
+                </ul>
+                <p>
+                  Si la documentación no se recibe a tiempo, Simple Report, S.L. no garantiza la correcta presentación del
+                  reporte al Banco de España.
+                </p>
 
-        <h2>7. Limitación de responsabilidad</h2>
-        <p>
-          Simple Report, S.L. no será responsable de retrasos, sanciones o incidencias derivadas de la falta de envío
-          de información, datos incorrectos o causas ajenas a la empresa.
-        </p>
+                <h2>4. Política de devoluciones</h2>
+                <p>Una vez contratado el servicio y realizado el pago, no se admitirán devoluciones.</p>
 
-        <h2>8. Legislación aplicable y jurisdicción</h2>
-        <p>
-          Estas condiciones se rigen por la legislación española. Para resolver conflictos, las partes se someten a
-          los Juzgados y Tribunales de Madrid, salvo norma imperativa en contrario.
-        </p>
-      </>
-    </LegalPage>
-  }
-/>
+                <h2>5. Obligaciones del cliente</h2>
+                <ul>
+                  <li>Firmar el contrato y realizar el pago en plazo.</li>
+                  <li>Facilitar información veraz, completa y en los plazos indicados.</li>
+                  <li>Cumplir con las normativas que le correspondan como intermediario o prestamista hipotecario.</li>
+                </ul>
+
+                <h2>6. Obligaciones de Simple Report, S.L.</h2>
+                <ul>
+                  <li>Prestar el servicio conforme al contrato y la información recibida.</li>
+                  <li>Garantizar la confidencialidad de los datos y documentos conforme al RGPD y la LOPD-GDD.</li>
+                  <li>Enviar al Banco de España los reportes financieros siempre que se cumplan los plazos de entrega de documentación.</li>
+                </ul>
+
+                <h2>7. Limitación de responsabilidad</h2>
+                <p>
+                  Simple Report, S.L. no será responsable de retrasos, sanciones o incidencias derivadas de la falta de envío
+                  de información, datos incorrectos o causas ajenas a la empresa.
+                </p>
+
+                <h2>8. Legislación aplicable y jurisdicción</h2>
+                <p>
+                  Estas condiciones se rigen por la legislación española. Para resolver conflictos, las partes se someten a
+                  los Juzgados y Tribunales de Madrid, salvo norma imperativa en contrario.
+                </p>
+              </>
+            </LegalPage>
+          }
+        />
         {/* 404 */}
         <Route path="*" element={<LegalPage title="Página no encontrada">Revisa la URL o vuelve al <Link to="/">inicio</Link>.</LegalPage>} />
       </Routes>
@@ -1511,9 +1517,9 @@ function AppShell(){
 export default function Website(){
   return (
     <HelmetProvider>
-      <BrowserRouter>
+      <HashRouter>
         <AppShell />
-      </BrowserRouter>
+      </HashRouter>
     </HelmetProvider>
   );
 }
