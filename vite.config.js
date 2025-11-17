@@ -3,8 +3,8 @@ import react from '@vitejs/plugin-react'
 
 export default defineConfig({
   plugins: [react()],
-  base: '/simplereport/',   // nombre del repo en GitHub
+  base: '/',          // 👈 IMPORTANTE: solo una barra
   build: {
-    outDir: 'docs',         // aquí se generará la versión para GitHub Pages
+    outDir: 'docs',   // para que GitHub Pages use /docs
   },
 })
